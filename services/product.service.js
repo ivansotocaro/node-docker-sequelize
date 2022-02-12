@@ -1,5 +1,6 @@
 const faker = require('faker');
 const boom = require('@hapi/boom');
+const { models } = require('../libs/sequelize')
 
 class ProductsService {
 
@@ -22,16 +23,13 @@ class ProductsService {
   }
 
   async create(data) {
-    const newProduct = {
-      id: faker.datatype.uuid(),
-      ...data
-    }
-    this.products.push(newProduct);
-    return newProduct;
+    const product = await models.Product.create(data)
+    return product;
   }
 
-  find() {
-    return this.products;
+  async find() {
+    const products = await models.Product.findAll({ include: ['category'] });
+    return products;
   }
 
   async findOne(id) {
